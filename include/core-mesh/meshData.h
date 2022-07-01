@@ -576,6 +576,7 @@ public:
 
 	//! removes all the vertices that are behind a plane (faces with one or more of those vertices are being deleted as well)
 	//! larger thresh removes less / negative thresh removes more
+	unsigned int removeVerticesBehindPlane(const Plane<FloatType>& plane, FloatType thresh = 0.0f);
 	unsigned int removeVerticesInFrontOfPlane(const Plane<FloatType>& plane, FloatType thresh = 0.0f);
 
 	//! removes all the faces that are fully behind a plane
