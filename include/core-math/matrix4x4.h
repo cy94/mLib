@@ -852,7 +852,7 @@ public:
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++)
             {
-                result += to_string(matrix2[i][j]);
+                result += std::to_string(matrix2[i][j]);
                 if (i != 3 || j != 3)
                     result += seperator;
             }
