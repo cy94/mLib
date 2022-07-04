@@ -470,7 +470,7 @@ size_t MeshData<FloatType>::removeIsolatedPieces(size_t minVertexNum) {
 }
 
 template <class FloatType>
-unsigned int MeshData<FloatType>::removeVerticesBehindPlane(const Plane<FloatType>& plane, FloatType thresh)
+std::unordered_map<unsigned int, unsigned int> MeshData<FloatType>::removeVerticesBehindPlane(const Plane<FloatType>& plane, FloatType thresh)
 {
 	unsigned int numV = (unsigned int)m_Vertices.size();
 	unsigned int numF = (unsigned int)m_FaceIndicesVertices.size();
@@ -522,12 +522,12 @@ unsigned int MeshData<FloatType>::removeVerticesBehindPlane(const Plane<FloatTyp
 
 	m_FaceIndicesVertices = new_faces;
 
-	return (unsigned int)m_Vertices.size();
+	return _map;
 }
 
 
 template <class FloatType>
-unsigned int MeshData<FloatType>::removeVerticesInFrontOfPlane( const Plane<FloatType>& plane, FloatType thresh )
+std::unordered_map<unsigned int, unsigned int>  MeshData<FloatType>::removeVerticesInFrontOfPlane( const Plane<FloatType>& plane, FloatType thresh )
 {
 	unsigned int numV = (unsigned int)m_Vertices.size();
 	unsigned int numF = (unsigned int)m_FaceIndicesVertices.size();
@@ -577,7 +577,7 @@ unsigned int MeshData<FloatType>::removeVerticesInFrontOfPlane( const Plane<Floa
 
 	m_FaceIndicesVertices = new_faces;
 
-	return (unsigned int)m_Vertices.size();
+	return _map;
 }
 
 
