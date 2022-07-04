@@ -6,6 +6,11 @@ namespace ml {
 
 	struct PlyHeader {
 		struct PlyPropertyHeader {
+			PlyPropertyHeader(std::string name, std::string nameType, unsigned int byteSize) {
+				this->name = name;
+				this->nameType = nameType;
+				this->byteSize = byteSize;
+			}
 			PlyPropertyHeader() {
 				byteSize = 0;
 			}
