@@ -575,51 +575,43 @@ void MeshIO<FloatType>::saveToPLY( const std::string& filename, const MeshData<F
 	file << "property list uchar int vertex_indices\n";
 	file << "end_header\n";
 
-	//TODO make this more efficient: i.e., copy first into an array, and then perform just a single write
-	if (mesh.m_Colors.size() > 0 || mesh.m_Normals.size() > 0) {
-		//for (size_t i = 0; i < mesh.m_Vertices.size(); i++) {
-		//	file.write((const char*)&mesh.m_Vertices[i], sizeof(float)*3);
-		//	if (mesh.m_Normals.size() > 0) {
-		//		file.write((const char*)&mesh.m_Normals[i], sizeof(float)*3);
-		//	}
-		//	if (mesh.m_Colors.size() > 0) {
-		//		vec4uc c(mesh.m_Colors[i]*255.0f);
-		//		file.write((const char*)&c, sizeof(unsigned char)*4);
-		//	}
-		//}
-
-		size_t vertexByteSize = sizeof(float)*3;
-		if (mesh.m_Normals.size() > 0)	vertexByteSize += sizeof(float)*3;
-		if (mesh.m_Colors.size() > 0)	vertexByteSize += sizeof(unsigned char)*4;
-		if (properties != nullptr) {
-			for (const auto& p : *properties) vertexByteSize += p.second.headerInfo.byteSize;
-		}
-		BYTE* data = new BYTE[vertexByteSize*mesh.m_Vertices.size()];
-		size_t byteOffset = 0;
-		for (size_t i = 0; i < mesh.m_Vertices.size(); i++) {
-			memcpy(&data[byteOffset], &mesh.m_Vertices[i], sizeof(float)*3);
-			byteOffset += sizeof(float)*3;
-			if (mesh.m_Normals.size() > 0) {
-				memcpy(&data[byteOffset], &mesh.m_Normals[i], sizeof(float)*3);
-				byteOffset += sizeof(float)*3;
-			}
-			if (mesh.m_Colors.size() > 0) {
-				vec4uc c(mesh.m_Colors[i]*255);
-				memcpy(&data[byteOffset], &c, sizeof(unsigned char)*4);
-				byteOffset += sizeof(unsigned char)*4;
-			}
-			if (properties != nullptr) {
-				for (const auto& p : *properties) {
-					memcpy(&data[byteOffset], p.second.data.data()+i*p.second.headerInfo.byteSize, p.second.headerInfo.byteSize);
-					byteOffset += p.second.headerInfo.byteSize;
-				}
-			}
-		}
-		file.write((const char*)data, byteOffset);
-		SAFE_DELETE_ARRAY(data);
-	} else {
-		file.write((const char*)&mesh.m_Vertices[0], sizeof(float)*3*mesh.m_Vertices.size());
+	// write vertices to file
+	// xyz per vertex
+	size_t vertexByteSize = sizeof(float)*3;
+	// check if we have normals and colors
+	if (mesh.m_Normals.size() > 0)	vertexByteSize += sizeof(float)*3;
+	if (mesh.m_Colors.size() > 0)	vertexByteSize += sizeof(unsigned char)*4;
+	// check if we have properties
+	if (properties != nullptr) {
+		for (const auto& p : *properties) vertexByteSize += p.second.headerInfo.byteSize;
 	}
+	BYTE* data = new BYTE[vertexByteSize*mesh.m_Vertices.size()];
+	size_t byteOffset = 0;
+
+	// write vertices, normals and colors to file
+	for (size_t i = 0; i < mesh.m_Vertices.size(); i++) {
+		memcpy(&data[byteOffset], &mesh.m_Vertices[i], sizeof(float)*3);
+		byteOffset += sizeof(float)*3;
+		if (mesh.m_Normals.size() > 0) {
+			memcpy(&data[byteOffset], &mesh.m_Normals[i], sizeof(float)*3);
+			byteOffset += sizeof(float)*3;
+		}
+		if (mesh.m_Colors.size() > 0) {
+			vec4uc c(mesh.m_Colors[i]*255);
+			memcpy(&data[byteOffset], &c, sizeof(unsigned char)*4);
+			byteOffset += sizeof(unsigned char)*4;
+		}
+		if (properties != nullptr) {
+			for (const auto& p : *properties) {
+				memcpy(&data[byteOffset], p.second.data.data()+i*p.second.headerInfo.byteSize, p.second.headerInfo.byteSize);
+				byteOffset += p.second.headerInfo.byteSize;
+			}
+		}
+	}
+	file.write((const char*)data, byteOffset);
+	SAFE_DELETE_ARRAY(data);
+
+	// write faces to file directly, dont copy to array
 	for (size_t i = 0; i < mesh.m_FaceIndicesVertices.size(); i++) {
 		unsigned char numFaceIndices = (unsigned char)mesh.m_FaceIndicesVertices[i].size();
 		file.write((const char*)&numFaceIndices, sizeof(unsigned char));
