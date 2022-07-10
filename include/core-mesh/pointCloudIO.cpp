@@ -21,14 +21,15 @@ namespace ml {
 		if (header.m_bHasColors)	pc.m_colors.resize(header.m_numVertices);
 
 		if (header.m_bBinary) {
-			unsigned int size = 0;
+			unsigned long long size = 0;
 			for (size_t i = 0; i < header.m_properties["vertex"].size(); i++) {
 				size += header.m_properties["vertex"][i].byteSize;
 			}
 			char* data = new char[size*header.m_numVertices];
+		
 			file.read(data, size*header.m_numVertices);
 
-			for (unsigned int i = 0; i < header.m_numVertices; i++) {
+			for (unsigned long long i = 0; i < header.m_numVertices; i++) {
 				unsigned int byteOffset = 0;
 				const std::vector<PlyHeader::PlyPropertyHeader>& vertexProperties = header.m_properties["vertex"];
 
