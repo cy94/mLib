@@ -470,8 +470,10 @@ size_t MeshData<FloatType>::removeIsolatedPieces(size_t minVertexNum) {
 }
 
 template <class FloatType>
-std::unordered_map<unsigned int, unsigned int> MeshData<FloatType>::removeVerticesBehindPlane(const Plane<FloatType>& plane, FloatType thresh)
-{
+std::unordered_map<unsigned int, unsigned int> MeshData<FloatType>::removeVerticesOutsideBox(const vec3f& boxMin, const vec3f& boxMax) {
+	/*
+		remove vertices that lie outside this box
+	*/
 	unsigned int numV = (unsigned int)m_Vertices.size();
 	unsigned int numF = (unsigned int)m_FaceIndicesVertices.size();
 
@@ -487,8 +489,10 @@ std::unordered_map<unsigned int, unsigned int> MeshData<FloatType>::removeVertic
 	for (auto& face : m_FaceIndicesVertices) {
 		bool keepFace = true;
 		for (auto& idx : face) {
-			// flipped the sign here
-			if (plane.distanceToPoint(m_Vertices[idx]) < thresh) {
+			vec3f vtx = m_Vertices[idx];
+			// if vertex lies outside the box, dont keep this face
+			if (vtx[0] > boxMax[0] || vtx[1] > boxMax[1] || vtx[2] > boxMax[2]
+				|| vtx[0] < boxMin[0] || vtx[1] < boxMin[1] || vtx[2] < boxMin[2]) {
 				keepFace = false;
 				break;
 			}
@@ -524,7 +528,6 @@ std::unordered_map<unsigned int, unsigned int> MeshData<FloatType>::removeVertic
 
 	return _map;
 }
-
 
 template <class FloatType>
 std::unordered_map<unsigned int, unsigned int>  MeshData<FloatType>::removeVerticesInFrontOfPlane( const Plane<FloatType>& plane, FloatType thresh )

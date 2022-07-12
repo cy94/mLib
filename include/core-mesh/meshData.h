@@ -574,9 +574,10 @@ public:
 	//! removes all pieces with respect to the number of vertices (smaller than minVertexNum) (may need to call mergeCloseVertices beforehand) 
 	size_t removeIsolatedPieces(size_t minVertexNum);
 
+	std::unordered_map<unsigned int, unsigned int> removeVerticesOutsideBox(const vec3f& boxMin, const vec3f& boxMax);
+
 	//! removes all the vertices that are behind a plane (faces with one or more of those vertices are being deleted as well)
 	//! larger thresh removes less / negative thresh removes more
-	std::unordered_map<unsigned int, unsigned int> removeVerticesBehindPlane(const Plane<FloatType>& plane, FloatType thresh = 0.0f);
 	std::unordered_map<unsigned int, unsigned int> removeVerticesInFrontOfPlane(const Plane<FloatType>& plane, FloatType thresh = 0.0f);
 
 	//! removes all the faces that are fully behind a plane
