@@ -66,6 +66,7 @@ void MeshIO<FloatType>::loadFromPLY( const std::string& filename, MeshData<Float
 				// assume colors are always uchar
 				// TODO: handle any data type here dynamically
 				float val;
+				unsigned char uchar_val;
 
 				if (vertexProperties[j].nameType == "float") {
 					val = ((float*) data_ptr)[0];
@@ -73,6 +74,9 @@ void MeshIO<FloatType>::loadFromPLY( const std::string& filename, MeshData<Float
 				else if (vertexProperties[j].nameType == "double") {
 					// downcast double to float
 					val = static_cast<float>(((double*) data_ptr)[0]);
+				}
+				else if (vertexProperties[j].nameType == "uchar") {
+					uchar_val = ((unsigned char*)data_ptr)[0] / 255.0f;
 				}
 
 				if (vertexProperties[j].name == "x") {
@@ -94,20 +98,16 @@ void MeshIO<FloatType>::loadFromPLY( const std::string& filename, MeshData<Float
 					mesh.m_Normals[i].z = val;
 				}
 				else if (vertexProperties[j].name == "red") {
-					mesh.m_Colors[i].x = ((unsigned char*)&data[i*size + byteOffset])[0];	
-					mesh.m_Colors[i].x /= 255.0f;
+					mesh.m_Colors[i].x = uchar_val;
 				}
 				else if (vertexProperties[j].name == "green") {
-					mesh.m_Colors[i].y = ((unsigned char*)&data[i*size + byteOffset])[0];	
-					mesh.m_Colors[i].y /= 255.0f;
+					mesh.m_Colors[i].y = uchar_val;
 				}
 				else if (vertexProperties[j].name == "blue") {
-					mesh.m_Colors[i].z = ((unsigned char*)&data[i*size + byteOffset])[0];	
-					mesh.m_Colors[i].z /= 255.0f;
+					mesh.m_Colors[i].z = uchar_val;
 				}
 				else if (vertexProperties[j].name == "alpha") {
-					mesh.m_Colors[i].w = ((unsigned char*)&data[i*size + byteOffset])[0];	
-					mesh.m_Colors[i].w /= 255.0f;
+					mesh.m_Colors[i].w = uchar_val;
 				} else {
 					if (numExtraProperties > 0) {
 						PlyProperties& props = *properties;
