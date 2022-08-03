@@ -46,58 +46,68 @@ void MeshIO<FloatType>::loadFromPLY( const std::string& filename, MeshData<Float
 
 	if (header.m_bBinary)
 	{
-		//unsigned int size = 3*4+3*4+3+11*4;
+		// size per vertex
 		unsigned int size = 0;
 		for (unsigned int i = 0; i < header.m_properties["vertex"].size(); i++) {
 			size += header.m_properties["vertex"][i].byteSize;
 		}
-		//size = 3*4+3*4+3+11*4;
+		// create an empty array
 		char* data = new char[size*header.m_numVertices];
+		// fill the array from file
 		file.read(data, size*header.m_numVertices);
+		// move data to the mesh object
 		for (unsigned int i = 0; i < header.m_numVertices; i++) {
 			unsigned int byteOffset = 0;
 			const std::vector<PlyHeader::PlyPropertyHeader>& vertexProperties = header.m_properties["vertex"];
 
 			for (unsigned int j = 0; j < vertexProperties.size(); j++) {
+				char* data_ptr = &data[i * size + byteOffset];
+				// handle float/double vals for vertices and normals
+				// assume colors are always uchar
+				// TODO: handle any data type here dynamically
+				float val;
+
+				if (vertexProperties[j].nameType == "float") {
+					val = ((float*) data_ptr)[0];
+				}
+				else if (vertexProperties[j].nameType == "double") {
+					// downcast double to float
+					val = static_cast<float>(((double*) data_ptr)[0]);
+				}
+
 				if (vertexProperties[j].name == "x") {
-					mesh.m_Vertices[i].x = ((float*)&data[i*size + byteOffset])[0];
-					byteOffset += vertexProperties[j].byteSize;
+					mesh.m_Vertices[i].x = val;
 				}
 				else if (vertexProperties[j].name == "y") {
-					mesh.m_Vertices[i].y = ((float*)&data[i*size + byteOffset])[0];
-					byteOffset += vertexProperties[j].byteSize;
+					mesh.m_Vertices[i].y = val;
 				}
 				else if (vertexProperties[j].name == "z") {
-					mesh.m_Vertices[i].z = ((float*)&data[i*size + byteOffset])[0];
-					byteOffset += vertexProperties[j].byteSize;
+					mesh.m_Vertices[i].z = val;
 				}
 				else if (vertexProperties[j].name == "nx") {
-					mesh.m_Normals[i].x = ((float*)&data[i*size + byteOffset])[0];
-					byteOffset += vertexProperties[j].byteSize;
+					mesh.m_Normals[i].x = val;
 				}
 				else if (vertexProperties[j].name == "ny") {
-					mesh.m_Normals[i].y = ((float*)&data[i*size + byteOffset])[0];
-					byteOffset += vertexProperties[j].byteSize;
+					mesh.m_Normals[i].y = val;
 				}
 				else if (vertexProperties[j].name == "nz") {
-					mesh.m_Normals[i].z = ((float*)&data[i*size + byteOffset])[0];
-					byteOffset += vertexProperties[j].byteSize;
+					mesh.m_Normals[i].z = val;
 				}
 				else if (vertexProperties[j].name == "red") {
-					mesh.m_Colors[i].x = ((unsigned char*)&data[i*size + byteOffset])[0];	mesh.m_Colors[i].x/=255.0f;
-					byteOffset += vertexProperties[j].byteSize;
+					mesh.m_Colors[i].x = ((unsigned char*)&data[i*size + byteOffset])[0];	
+					mesh.m_Colors[i].x /= 255.0f;
 				}
 				else if (vertexProperties[j].name == "green") {
-					mesh.m_Colors[i].y = ((unsigned char*)&data[i*size + byteOffset])[0];	mesh.m_Colors[i].y/=255.0f;
-					byteOffset += vertexProperties[j].byteSize;
+					mesh.m_Colors[i].y = ((unsigned char*)&data[i*size + byteOffset])[0];	
+					mesh.m_Colors[i].y /= 255.0f;
 				}
 				else if (vertexProperties[j].name == "blue") {
-					mesh.m_Colors[i].z = ((unsigned char*)&data[i*size + byteOffset])[0];	mesh.m_Colors[i].z/=255.0f;
-					byteOffset += vertexProperties[j].byteSize;
+					mesh.m_Colors[i].z = ((unsigned char*)&data[i*size + byteOffset])[0];	
+					mesh.m_Colors[i].z /= 255.0f;
 				}
 				else if (vertexProperties[j].name == "alpha") {
-					mesh.m_Colors[i].w = ((unsigned char*)&data[i*size + byteOffset])[0];	mesh.m_Colors[i].w/=255.0f;
-					byteOffset += vertexProperties[j].byteSize;
+					mesh.m_Colors[i].w = ((unsigned char*)&data[i*size + byteOffset])[0];	
+					mesh.m_Colors[i].w /= 255.0f;
 				} else {
 					if (numExtraProperties > 0) {
 						PlyProperties& props = *properties;
@@ -106,11 +116,10 @@ void MeshIO<FloatType>::loadFromPLY( const std::string& filename, MeshData<Float
 							memcpy(it->second.data.data() + i*it->second.headerInfo.byteSize, (BYTE*)&data[i*size + byteOffset], it->second.headerInfo.byteSize);
 						}
 					}
-					byteOffset += vertexProperties[j].byteSize; //ignore unknown
 				}
+				byteOffset += vertexProperties[j].byteSize;
 			}
 			assert(byteOffset == size);
-
 		}	
 
 		delete [] data;
