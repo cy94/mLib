@@ -486,9 +486,9 @@ std::unordered_map<unsigned int, unsigned int> MeshData<FloatType>::removeVertic
 
 	std::unordered_map<unsigned int, unsigned int> _map(m_Vertices.size());
 	unsigned int cnt = 0;
-	for (auto& face : m_FaceIndicesVertices) {
+	for (auto&& face : m_FaceIndicesVertices) {
 		bool keepFace = true;
-		for (auto& idx : face) {
+		for (auto&& idx : face) {
 			vec3f vtx = m_Vertices[idx];
 			// if vertex lies outside the box, dont keep this face
 			if (vtx[0] > boxMax[0] || vtx[1] > boxMax[1] || vtx[2] > boxMax[2]
@@ -498,7 +498,7 @@ std::unordered_map<unsigned int, unsigned int> MeshData<FloatType>::removeVertic
 			}
 		}
 		if (keepFace) {
-			for (auto& idx : face) {
+			for (auto&& idx : face) {
 
 				if (_map.find(idx) != _map.end()) {
 					idx = _map[idx];	//set to new idx, which already exists

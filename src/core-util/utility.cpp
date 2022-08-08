@@ -1,3 +1,7 @@
+#ifdef LINUX
+#include <filesystem>
+#endif
+
 namespace ml {
 
 namespace util
@@ -459,7 +463,11 @@ namespace util
 
 	void makeDirectory(const std::string &directory)
 	{
-		mkdir(directory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+		std::filesystem::create_directories(directory);
+	}
+
+	bool directoryExists(const std::string& directory) {
+		return std::filesystem::is_directory(directory);
 	}
 #endif
 }  // namespace util

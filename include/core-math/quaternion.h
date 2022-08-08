@@ -6,6 +6,9 @@
 
 namespace ml {
 
+// Fix error according to https://stackoverflow.com/questions/20875033/clang-vs-vcerror-declaration-of-t-shadows-template-parameter
+template <class FloatType> class Quaternion;
+template <class FloatType> std::istream& operator>> ( std::istream& s, Quaternion<FloatType>& q );
 
 //! Quaternions are used to describe rotations
 template <class FloatType> class Quaternion {
@@ -293,7 +296,8 @@ template <class FloatType> class Quaternion {
 		vec3<FloatType> m_Imag;	//! the imaginary part of the quaternion
 
 		//! read a quaternion from a stream
-		template <class FloatType> friend std::istream& operator>> ( std::istream& s, Quaternion<FloatType>& q );
+		//template <class FloatType> 
+		friend std::istream& operator>> ( std::istream& s, Quaternion<FloatType>& q );
 
 		static const FloatType eps;
 	};
