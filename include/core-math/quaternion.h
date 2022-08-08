@@ -202,7 +202,7 @@ template <class FloatType> class Quaternion {
 		Quaternion slerp( const Quaternion& q2, FloatType t ) const;
 
 	private:
-		
+
 		void constructFromMatrix( const Matrix3x3<FloatType>& m )
 		{
 			FloatType m00 = m(0,0);	FloatType m01 = m(0,1);	FloatType m02 = m(0,2);
@@ -212,25 +212,25 @@ template <class FloatType> class Quaternion {
 			FloatType tr = m00 + m11 + m22;
 
 			FloatType qw, qx, qy, qz;
-			if (tr > 0) { 
-				FloatType S = sqrt(tr+(FloatType)1.0) * 2; // S=4*qw 
+			if (tr > 0) {
+				FloatType S = sqrt(tr+(FloatType)1.0) * 2; // S=4*qw
 				qw = (FloatType)0.25 * S;
 				qx = (m21 - m12) / S;
-				qy = (m02 - m20) / S; 
-				qz = (m10 - m01) / S; 
-			} else if ((m00 > m11)&(m00 > m22)) { 
-				FloatType S = sqrt((FloatType)1.0 + m00 - m11 - m22) * (FloatType)2; // S=4*qx 
+				qy = (m02 - m20) / S;
+				qz = (m10 - m01) / S;
+			} else if ((m00 > m11)&(m00 > m22)) {
+				FloatType S = sqrt((FloatType)1.0 + m00 - m11 - m22) * (FloatType)2; // S=4*qx
 				qw = (m21 - m12) / S;
 				qx = (FloatType)0.25 * S;
-				qy = (m01 + m10) / S; 
-				qz = (m02 + m20) / S; 
-			} else if (m11 > m22) { 
+				qy = (m01 + m10) / S;
+				qz = (m02 + m20) / S;
+			} else if (m11 > m22) {
 				FloatType S = sqrt((FloatType)1.0 + m11 - m00 - m22) * (FloatType)2; // S=4*qy
 				qw = (m02 - m20) / S;
-				qx = (m01 + m10) / S; 
+				qx = (m01 + m10) / S;
 				qy = (FloatType)0.25 * S;
-				qz = (m12 + m21) / S; 
-			} else { 
+				qz = (m12 + m21) / S;
+			} else {
 				FloatType S = sqrt((FloatType)1.0 + m22 - m00 - m11) * (FloatType)2; // S=4*qz
 				qw = (m10 - m01) / S;
 				qx = (m02 + m20) / S;
@@ -296,9 +296,8 @@ template <class FloatType> class Quaternion {
 		vec3<FloatType> m_Imag;	//! the imaginary part of the quaternion
 
 		//! read a quaternion from a stream
-		//template <class FloatType> 
-		friend std::istream& operator>> ( std::istream& s, Quaternion<FloatType>& q );
-
+		friend std::istream& operator>><> ( std::istream& s, Quaternion<FloatType>& q );
+		// Fix error according to https://stackoverflow.com/questions/20875033/clang-vs-vcerror-declaration-of-t-shadows-template-parameter
 		static const FloatType eps;
 	};
 
@@ -356,7 +355,7 @@ template <class FloatType> inline FloatType Quaternion<FloatType>::angleDeg() co
 //template <class FloatType> inline Matrix4x4<FloatType> Quaternion<FloatType>::matrix4x4() const {
 //	/*
 //	Matrix4x4<FloatType> m;
-//	
+//
 //	float q[ 4 ];
 //	q[ 0 ] = m_Imag[ 0 ];
 //	q[ 1 ] = m_Imag[ 1 ];
@@ -435,7 +434,7 @@ template <class FloatType> inline void Quaternion<FloatType>::operator/=( FloatT
 	m_Real /= r; m_Imag /= r;
 	}
 
-template <class FloatType> inline FloatType Quaternion<FloatType>::scalarProd( const Quaternion& b ) const { 
+template <class FloatType> inline FloatType Quaternion<FloatType>::scalarProd( const Quaternion& b ) const {
 	return (m_Real * b.m_Real + (m_Imag | b.m_Imag));
 }
 
