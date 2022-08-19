@@ -41,7 +41,7 @@ struct TriangleBVHNode {
 		}
 	}
 
-	void splitMidPoint(typename std::vector<typename TriMesh<FloatType>::Triangle*>::iterator& begin, typename std::vector<typename TriMesh<FloatType>::Triangle*>::iterator& end) {
+	void splitMidPoint(typename std::vector<typename TriMesh<FloatType>::Triangle*>::iterator begin, typename std::vector<typename TriMesh<FloatType>::Triangle*>::iterator end) {
 		if (end - begin > 1) {
 			//determine longest axis
 			BoundingBox3<FloatType> bbox;
@@ -256,7 +256,7 @@ public:
 	}
 	TriMeshAcceleratorBVH(const TriMesh<FloatType>& triMesh, bool storeLocalCopy = false) {
 		m_Root = nullptr;
-		build(triMesh, storeLocalCopy);
+		this->build(triMesh, storeLocalCopy);
 		
 		//std::vector<const TriMesh<FloatType>*> meshes;
 		//meshes.push_back(&triMesh);
