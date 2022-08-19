@@ -362,6 +362,10 @@ namespace ml {
 			}
 		}
 
+		void setColor(int v_index, const vec4<FloatType>& c) {
+			m_vertices[v_index].color = c;
+		}
+
 		//! Computes the bounding box of the mesh (not cached!)
 		BoundingBox3<FloatType> computeBoundingBox() const {
 			BoundingBox3<FloatType> bb;
