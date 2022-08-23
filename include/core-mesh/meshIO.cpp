@@ -56,7 +56,7 @@ void MeshIO<FloatType>::loadFromPLY( const std::string& filename, MeshData<Float
 		// fill the array from file
 		file.read(data, size*header.m_numVertices);
 		// move data to the mesh object
-		for (unsigned int i = 0; i < header.m_numVertices; i++) {
+		for (unsigned long long i = 0; i < header.m_numVertices; i++) {
 			unsigned int byteOffset = 0;
 			const std::vector<PlyHeader::PlyPropertyHeader>& vertexProperties = header.m_properties["vertex"];
 
