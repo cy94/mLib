@@ -1,6 +1,8 @@
 #ifndef KEYCODES_H_
 #define KEYCODES_H_
 
+#ifndef NO_MLIB_KEYCODES
+
 #define KEY_ESCAPE            0x1B
 
 #define KEY_ALT_ENTER         10
@@ -93,5 +95,7 @@
 #define KEY_F10               121
 #define KEY_F11               122
 #define KEY_F12               123
+
+#endif
 
 #endif  // KEYCODES_H_
