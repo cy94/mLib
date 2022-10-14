@@ -565,7 +565,7 @@ public:
 	void merge(const MeshData<FloatType>& other);
 	unsigned int removeDuplicateVertices();
 	unsigned int removeDuplicateFaces();
-	unsigned int mergeCloseVertices(FloatType thresh, bool approx = false);
+	unsigned int mergeCloseVertices(FloatType thresh, bool approx = false, bool averageColors = false);
 	unsigned int removeDegeneratedFaces();
 
 	//! if a vertex is not part of any face, remove it; also removes isolated normals, colors, etc.

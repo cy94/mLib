@@ -230,8 +230,12 @@ unsigned int MeshData<FloatType>::hasNearestNeighborApprox(const vec3i& coord, S
 
 
 template <class FloatType>
-unsigned int MeshData<FloatType>::mergeCloseVertices(FloatType thresh, bool approx)
+unsigned int MeshData<FloatType>::mergeCloseVertices(FloatType thresh, bool approx, bool averageColors)
 {
+	/*
+		averageColors: average the point colors that get mapped to the same voxel
+						only implemented for approx = true
+	*/
 	// threshold should be positive
 	if (thresh <= (FloatType)0)	throw MLIB_EXCEPTION("invalid thresh " + std::to_string(thresh));	
 	// current number of vertices
@@ -244,6 +248,8 @@ unsigned int MeshData<FloatType>::mergeCloseVertices(FloatType thresh, bool appr
 	std::vector<vec4<FloatType>> new_color;		if (hasPerVertexColors())		new_color.reserve(m_Colors.size());
 	std::vector<vec3<FloatType>> new_normals;	if (hasPerVertexNormals())		new_normals.reserve(m_Normals.size());
 	std::vector<vec2<FloatType>> new_tex;		if (hasPerVertexTexCoords())	new_tex.reserve(m_TextureCoords.size());
+	// the number of old points mapping to each new point
+	std::vector<unsigned int> numPointsOldToNew(m_Vertices.size(), 0);
 
 	unsigned int cnt = 0;
 	if (approx) {
@@ -268,9 +274,16 @@ unsigned int MeshData<FloatType>::mergeCloseVertices(FloatType thresh, bool appr
 				if (hasPerVertexColors())		new_color.push_back(m_Colors[v]);
 				if (hasPerVertexNormals())		new_normals.push_back(m_Normals[v]);
 				if (hasPerVertexTexCoords())	new_tex.push_back(m_TextureCoords[v]);
+
+				numPointsOldToNew[cnt] = 1;
 			} else {
 				// map from old point to existing point in the grid 
 				vertexLookUp[v] = nn;
+				numPointsOldToNew[nn]++;
+
+				if (averageColors){
+					new_color[nn] += m_Colors[v];
+				}
 			}
 		}
 	} else {
@@ -309,9 +322,14 @@ unsigned int MeshData<FloatType>::mergeCloseVertices(FloatType thresh, bool appr
 		if (hasPerVertexNormals())		m_Normals = std::vector<vec3<FloatType>>(new_normals.begin(), new_normals.end());
 		if (hasPerVertexTexCoords())	m_TextureCoords = std::vector<vec2<FloatType>>(new_tex.begin(), new_tex.end());
 	}
+	// average all the colors that contributed to a point
+	if(hasPerVertexColors() && averageColors){
+		for(unsigned long long i = 0; i < m_Colors.size(); i++){
+			m_Colors[i] /= numPointsOldToNew[i];
+		}
+	}
 
 	removeDegeneratedFaces();
-	//std::cout << "Merged " << numV-cnt << " of " << numV << " vertices" << std::endl;
 	return cnt;
 }
 
