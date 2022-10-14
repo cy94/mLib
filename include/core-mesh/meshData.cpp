@@ -232,10 +232,14 @@ unsigned int MeshData<FloatType>::hasNearestNeighborApprox(const vec3i& coord, S
 template <class FloatType>
 unsigned int MeshData<FloatType>::mergeCloseVertices(FloatType thresh, bool approx)
 {
+	// threshold should be positive
 	if (thresh <= (FloatType)0)	throw MLIB_EXCEPTION("invalid thresh " + std::to_string(thresh));	
+	// current number of vertices
 	unsigned int numV = (unsigned int)m_Vertices.size();
 
+	// mapping from current vertices to new vertices
 	std::vector<unsigned int> vertexLookUp;	vertexLookUp.resize(numV);
+	// new vertices and their properties
 	std::vector<vec3<FloatType>> new_verts; new_verts.reserve(numV);
 	std::vector<vec4<FloatType>> new_color;		if (hasPerVertexColors())		new_color.reserve(m_Colors.size());
 	std::vector<vec3<FloatType>> new_normals;	if (hasPerVertexNormals())		new_normals.reserve(m_Normals.size());
@@ -244,21 +248,28 @@ unsigned int MeshData<FloatType>::mergeCloseVertices(FloatType thresh, bool appr
 	unsigned int cnt = 0;
 	if (approx) {
 		SparseGrid3<unsigned int> neighborQuery(0.6f, numV*2);
+		// go through each current vertex
 		for (unsigned int v = 0; v < numV; v++) {
-
 			const vec3<FloatType>& vert = m_Vertices[v];
+			// get its position in the voxel grid
 			vec3i coord = toVirtualVoxelPos(vert, thresh);		
+			// check if a vertex exists already at this position
 			unsigned int nn = hasNearestNeighborApprox(coord, neighborQuery, thresh);
-
+			// this position is empty in the grid
 			if (nn == (unsigned int)-1) {
+				// add a new entry in the grid = new index of the point
 				neighborQuery[coord] = cnt;
+				// store new vert and properties
 				new_verts.push_back(vert);
+				// mapping from old index to new index
 				vertexLookUp[v] = cnt;
+				// increment the new index
 				cnt++;
 				if (hasPerVertexColors())		new_color.push_back(m_Colors[v]);
 				if (hasPerVertexNormals())		new_normals.push_back(m_Normals[v]);
 				if (hasPerVertexTexCoords())	new_tex.push_back(m_TextureCoords[v]);
 			} else {
+				// map from old point to existing point in the grid 
 				vertexLookUp[v] = nn;
 			}
 		}
