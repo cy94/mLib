@@ -22,7 +22,7 @@
 
 #endif
 
-#ifdef LINUX
+#ifdef __linux__
 #define DEBUG_BREAK assert(false)
 #endif
 
@@ -55,7 +55,7 @@
 #include <limits>
 #include <tuple>
 #include <complex>
-#include <queue> 
+#include <queue>
 #include <random>
 #include <iomanip>
 #include <boost/serialization/array_wrapper.hpp>
@@ -203,9 +203,9 @@ typedef signed int sint;
 
 #ifndef uint
 typedef unsigned int uint;
-#endif 
+#endif
 
-#ifndef slong 
+#ifndef slong
 typedef signed long slong;
 #endif
 

@@ -13,7 +13,7 @@ namespace ml {
 		return (val) * freq_;
 #endif //_WIN32
 
-#ifdef LINUX
+#ifdef __linux__
 		struct timeval timevalue;
 		gettimeofday(&timevalue, nullptr);
 		return (double)((UINT64)timevalue.tv_sec) + (double)((UINT64)timevalue.tv_usec) / 1000000.0;

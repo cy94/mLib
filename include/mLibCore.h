@@ -53,7 +53,7 @@ namespace ml
 //
 // These should be moved back into vec1 -> vec6...
 //
-#ifdef LINUX
+#ifdef __linux__
     template<>  const vec3f vec3f::origin;
     template<>  const vec3f vec3f::eX;
     template<>  const vec3f vec3f::eY;
