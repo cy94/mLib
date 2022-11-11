@@ -3,7 +3,7 @@
 #include <windows.h>
 #endif
 
-#ifdef LINUX
+#ifdef __linux__
 #ifndef _POSIX_SOURCE
 #define _POSIX_SOURCE
 #endif
@@ -14,6 +14,7 @@
 #include <dirent.h>
 #endif
 
+#include "mLibCore.h"
 //
 // core-base source files
 //
@@ -52,7 +53,7 @@
 //
 #include "../src/core-mesh/meshUtil.cpp"
 
-#ifdef LINUX
+#ifdef __linux__
 namespace ml
 {
     template<> const vec3f vec3f::origin(0.0f, 0.0f, 0.0f);

@@ -193,7 +193,7 @@ namespace util
     std::string directoryFromPath(const std::string& path)
     {
 		if (path.size() == 0) return path;
-		if (path.back() == '\\' || path.back() == '/') return path;		
+		if (path.back() == '\\' || path.back() == '/') return path;
 		size_t c = path.size();
 		while (c) {
 			c--;
@@ -248,7 +248,7 @@ namespace util
 		fclose(file);
 	}
 
-	void renameFile(const std::string& oldFilename, const std::string& newFilename) 
+	void renameFile(const std::string& oldFilename, const std::string& newFilename)
 	{
 		rename(oldFilename.c_str(), newFilename.c_str());
 	}
@@ -264,8 +264,8 @@ namespace util
 		globalHandle = GlobalAlloc(GMEM_MOVEABLE, bytesToCopy);
 		if(globalHandle != nullptr)
 		{
-			BYTE *stringPointer = (BYTE*)GlobalLock(globalHandle); 
-			memcpy(stringPointer, S.c_str(), bytesToCopy); 
+			BYTE *stringPointer = (BYTE*)GlobalLock(globalHandle);
+			memcpy(stringPointer, S.c_str(), bytesToCopy);
 			GlobalUnlock(globalHandle);
 			SetClipboardData(CF_TEXT, globalHandle);
 		}
@@ -324,7 +324,7 @@ namespace util
 		char* fullCommandLinePtr = new char[fullCommandLine.length()+1];
 		strcpy(fullCommandLinePtr, fullCommandLine.c_str());
 
-		// Start the child process. 
+		// Start the child process.
 		if( !CreateProcessA( nullptr,  // No module name (use command line)
 			fullCommandLinePtr,		// Command line
 			nullptr,           // Process handle not inheritable
@@ -332,10 +332,10 @@ namespace util
 			FALSE,          // Set handle inheritance to FALSE
 			0,              // No creation flags
 			nullptr,           // Use parent's environment block
-			nullptr,           // Use parent's starting directory 
+			nullptr,           // Use parent's starting directory
 			&si,            // Pointer to STARTUPINFO structure
 			&pi )           // Pointer to PROCESS_INFORMATION structure
-			) 
+			)
 		{
 			MLIB_ERROR("CreateProcess failed");
 			return -1;
@@ -348,7 +348,7 @@ namespace util
 			WaitForSingleObject( pi.hProcess, INFINITE );
 		}
 
-		// Close process and thread handles. 
+		// Close process and thread handles.
 		CloseHandle( pi.hProcess );
 		CloseHandle( pi.hThread );
 		return 0;
@@ -429,14 +429,14 @@ namespace util
 	std::string getExecutablePath() {
 		HMODULE hModule = GetModuleHandleW(NULL);
 		CHAR path[MAX_PATH];
-		GetModuleFileNameA(hModule, path, MAX_PATH);		
+		GetModuleFileNameA(hModule, path, MAX_PATH);
 		return util::directoryFromPath(path);
 		//PathRemoveFileSpecA(path);
 		//return std::string(path);
 	}
 #endif
 
-#ifdef LINUX
+#ifdef __linux__
 	void copyStringToClipboard(const std::string &S)
 	{
 

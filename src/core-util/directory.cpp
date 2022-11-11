@@ -137,7 +137,7 @@ void Directory::init(const std::string &path)
 }
 #endif  // _WIN32
 
-#ifdef LINUX
+#ifdef __linux__
 void Directory::init(const std::string &path)
 {
     //std::cout << "Loading all files in " << path << std::endl;
@@ -168,7 +168,7 @@ void Directory::init(const std::string &path)
 			m_files.push_back(std::string(entity->d_name));
 		}
 	}
-	
+
 	closedir(dir);
 }
 #endif  // LINUX
